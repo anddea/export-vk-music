@@ -1,7 +1,7 @@
 # Export VK music to Text
 ## Usage
 Open any playlist you want to export. Run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/vk.js) or [copy code below](#copy-code) and paste it in browser console.  
-> *To open console press F12 or Ctrl + Shift + J (Windows, Linux), Cmd + Shift + J (Mac).*
+> *To open console press F12 or Ctrl + Shift + J (Windows, Linux), Cmd + Shift + J (Mac) for Chromium-based browsers, Ctrl + Shift + K (Windows, Linux), Cmd + Shift + K (Mac) for Firefox.*
 
 ## How it works
 It will scroll to bottom of page and create buttons to copy, download and open list of tracks in new tab.
