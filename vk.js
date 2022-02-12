@@ -1,3 +1,6 @@
+var delay = 50;
+var scrollDirection = 200;
+
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
@@ -34,12 +37,12 @@ function copyTextToClipboard(text) {
 }
 
 function scrapeTracks() {
-    var artist = document.getElementsByClassName("audio_row__performers")
-    var song = document.getElementsByClassName("audio_row__title_inner")
-    list = new Array()
+    var artist = document.getElementsByClassName("audio_row__performers");
+    var song = document.getElementsByClassName("audio_row__title_inner");
+    list = [];
 
     for (var i = 0; i < artist.length; i++) {
-        list[i] = artist[i].firstElementChild.innerText + ' - ' + song[i].innerText
+        list[i] = artist[i].firstElementChild.innerText + ' - ' + song[i].innerText;
     }
 
     if (document.getElementsByClassName("AudioPlaylistSnippet__body").length > 0) {
@@ -94,7 +97,7 @@ function createButtons(artist, performersParent) {
     downloadBtn.style.marginRight = "1rem";
     downloadBtn.style.display = "inline-block";
     downloadBtn.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(list.join('\n')));
-    downloadBtn.setAttribute('download', "VK music.txt");
+    downloadBtn.setAttribute('download', 'VK Music ' + Date() + '.txt');
     performersParent.append(downloadBtn);
 
     // Open in new tab
@@ -129,8 +132,6 @@ function createButtons(artist, performersParent) {
     };
 }
 
-var scrollDirection = 200;
-
 function pageScroll() {
     setTimeout(function () {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
@@ -146,11 +147,7 @@ function pageScroll() {
 
         window.scrollBy(0, scrollDirection);
         scrolldelay = setTimeout(pageScroll(), 1);
-    }, 150)
+    }, delay)
 }
-
-window.addEventListener('locationchange', function () {
-    console.log('location changed!');
-})
 
 pageScroll();
