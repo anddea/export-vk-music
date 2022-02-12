@@ -59,11 +59,14 @@ function pageScroll() {
                         list[i] = artist[i].firstElementChild.innerText + ' - ' + song[i].innerText
                     }
 
-                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                        var performersParent = document.getElementsByClassName("audio_row__performers")[length - 1].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                    if (document.getElementsByClassName("AudioPlaylistSnippet__body").length > 0) {
+                        var performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode;
+                    } else {
+                        var performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                    }
 
-                        if (!document.querySelector("#copyBtn")) {
-                            // Info
+                    if (!document.querySelector("#copyBtn")) {
+                        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {// Info
                             var info = document.createElement('div');
                             info.id = "info";
                             info.style.width = "70%";
@@ -113,7 +116,7 @@ function pageScroll() {
                             });
 
                             document.getElementById("copyBtn").scrollIntoView({ block: "center", behavior: "smooth" });
-                            
+
                             document.getElementById("info").onmouseover = function () {
                                 showTooltip(this, { text: 'Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны', black: 1, noZIndex: true, needLeft: false });
                             };
@@ -129,9 +132,15 @@ function pageScroll() {
                             document.getElementById("openBtn").onmouseover = function () {
                                 showTooltip(this, { text: 'Открыть список треков в новой вкладке', black: 1, noZIndex: true, needLeft: false });
                             };
-                            // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
                         }
+                    } else {
+                        document.querySelector("#copyBtn").nextSibling.nextSibling.remove();
+                        document.querySelector("#copyBtn").nextSibling.remove();
+                        document.querySelector("#copyBtn").previousSibling.remove();
+                        document.querySelector("#copyBtn").remove();
+                        pageScroll();
                     }
+
                 } else { alert("На этой странице не найдено песен") }
 
             }, 500);
@@ -143,6 +152,10 @@ function pageScroll() {
         scrolldelay = setTimeout('pageScroll()', 1);
     }, 150)
 }
+
+window.addEventListener('locationchange', function () {
+    console.log('location changed!');
+})
 
 pageScroll();
 ```
