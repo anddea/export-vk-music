@@ -10,7 +10,7 @@ To change speed of scrolling edit these values
 var delay = 50 // milliseconds to scroll
 var scrollDirection = 200 // pixels to go in given time (currently delay = 50 milliseconds) <- distance
 ```
-*If delay value is small or scrollDirection value is big, the page may not scroll to the end and not save the entire track list*
+*If delay value is small or scrollDirection value is big, the page may not scroll to the end and not save the entire track list but there is a way to run the same script multiple times*
 
 ## Инструкция
 1. **Открыть на компе список треков**, которые хотите перенести (своя музыка, музыка друзей, альбомы исполнителей, музыка из плейлистов (нужно открывать плейлист в новой вкладке, а не поверх основной страницы (модальное окно)), даже из плейлистов, которые сгенерированы самим ВК (например Daily Playlist, Weekly Playlist и др.)).
@@ -22,7 +22,7 @@ var scrollDirection = 200 // pixels to go in given time (currently delay = 50 mi
 var delay = 50 // миллисекунд
 var scrollDirection = 200 // пикселей для прохождения за заданное время (в данный момент delay = 50 миллисекунд)
 ```
-*Если время маленькое или расстояние большое, страница может не прокрутиться до конца и сохранить не весь список треков*
+*Если время маленькое или расстояние большое, страница может не прокрутиться до конца и сохранить не весь список треков, но можно запустить скрипт несколько раз*
 
 ## Copy code
 #### Advanced code (creates buttons to copy, download, open in new tab and shows information how many tracks in playlist)
