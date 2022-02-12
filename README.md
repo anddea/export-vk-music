@@ -2,7 +2,7 @@
 From any playlist, with autoscrolling and ability to save multiple ways.
 
 ## Usage
-Open any playlist that you want to export in new tab (not modal window). Run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/vk.js) or [copy code below](#copy-code) and paste it in browser console. The code creates buttons to copy, download, open in new tab and shows information how many tracks in playlist. Additionally there are snippets to [open in new tab](#open-in-new-tab) and [download text file](#download-text-file) automatically.
+Open any playlist that you want to export in new tab (not modal window). Run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/vk.js) or [copy code below](#copy-code) and paste it in browser console. The code creates buttons to copy, download, open in new tab and shows information how many tracks in playlist. Additionally there are code snippets to [open list tracks in new tab](#open-in-new-tab) and [download text file](#download-text-file) automatically.
 > *To open console press `F12` or `Ctrl + Shift + J` (Windows, Linux), `Cmd + Shift + J` (Mac) for Chromium-based browsers, `Ctrl + Shift + K` (Windows, Linux), `Cmd + Shift + K` (Mac) for Firefox.*
 
 To change speed of scrolling edit these values
