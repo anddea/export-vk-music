@@ -3,28 +3,42 @@ From any playlist, with autoscrolling and ability to save multiple ways.
 
 ## Usage
 Open any playlist that you want to export in new tab (not modal window). Run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/src/vk.js) or [copy code below](#copy-code) and paste it in browser console. The code creates buttons to copy, download, open in new tab and shows information how many tracks in playlist. Additionally there are code snippets to [open list tracks in new tab](#open-in-new-tab) and [download text file](#download-text-file) automatically.
-> *To open console press `F12` or `Ctrl + Shift + J` (Windows, Linux), `Cmd + Shift + J` (Mac) for Chromium-based browsers, `Ctrl + Shift + K` (Windows, Linux), `Cmd + Shift + K` (Mac) for Firefox.*
+
+##### Shortcuts to open console
+Chromium-based browsers  
+`Ctrl` + `Shift` + `J` (Windows, Linux)  
+`Command ⌘` + `Option ⌥` + `J` (Mac)  <br><br>
+Firefox  
+`Ctrl` + `Shift` + `K` (Windows, Linux)  
+`Command ⌘` + `Option ⌥` + `K` (Mac) <br><br>
+`F12` DevTools panel
+
+Type | Windows, Linux | Mac
+---- | ---- | ----
+Chromium-based | `Ctrl` + `Shift` + `J` | `Command ⌘` + `Option ⌥` + `J`
+Firefox | `Ctrl` + `Shift` + `K` | `Command ⌘` + `Option ⌥` + `K`
+<hr>
 <details>
   <summary>More</summary>
   
-  You can use any services, e.g. for transfering music you can use [TuneMyMusic](https://www.tunemymusic.com/) or [Soundiiz](https://soundiiz.com/)
+   For transferring music there are services such as [TuneMyMusic](https://www.tunemymusic.com/) or [Soundiiz](https://soundiiz.com/).
 </details>
 
 To change speed of scrolling edit these values
 ```js
-var delay = 50 // milliseconds to scroll
+var delay = 50 // milliseconds to wait 
 var scrollDirection = 200 // pixels to go in given time (currently delay = 50 milliseconds) <- distance
 ```
 *If delay value is small or scrollDirection value is big, the page may not scroll to the end and not save the entire track list but there is a way to run the same script multiple times or change values of delay and scrollDirection.*
 
 ## Инструкция
-1. **Открыть на компе список треков**, которые хотите перенести (своя музыка, музыка друзей, альбомы исполнителей, музыка из плейлистов (нужно открывать плейлист в новой вкладке, а не поверх основной страницы (модальное окно)), даже из плейлистов, которые сгенерированы самим ВК (например Daily Playlist, Weekly Playlist и др.)).
-2. **Открыть консоль**, в хромиум-подобных браузерах `F12` или `Ctrl + Shift + J` (Windows/Linux), `Cmd + Option + J`/`Cmd + Alt + J` (Mac), для Firefox `Ctrl + Shift + K` (Windows, Linux), `Cmd + Shift + K` (Mac).
-3. **Вставить [скрипт](#copy-code) (`Ctrl + V` / `Cmd + V`) и запустить (`Enter`).** Скрипт прокрутит страницу до конца и добавит в конце треков кнопки: скопировать все песни, скачать текстовый файл и открыть список треков в новой вкладке. Дополнительно есть скрипты для автоматического [открытия треков в новой вкладке](#open-in-new-tab) и [скачивания](#download-text-file) без взаимодействия пользователя.
+1. **Открыть на компьютере список треков**, которые хотите перенести (своя музыка, музыка друзей, альбомы исполнителей, музыка из плейлистов (нужно открывать плейлист в новой вкладке, а не поверх основной страницы (модальное окно)), даже из плейлистов, которые сгенерированы самим ВК (например Daily Playlist, Weekly Playlist и др.)).
+2. **Открыть консоль браузера, [горячие клавиши](#shortcuts-to-open-console)**.
+3. **Вставить [скрипт](#copy-code) (`Ctrl + V` / `Command ⌘ + V`) и запустить (`Enter`).** Скрипт прокрутит страницу до конца и добавит в конце треков кнопки: скопировать все песни, скачать текстовый файл и открыть список треков в новой вкладке. Дополнительно есть скрипты для автоматического [открытия треков в новой вкладке](#open-in-new-tab) и [скачивания](#download-text-file) без взаимодействия пользователя.
 <details>
   <summary>Дополнительно</summary>
   
-  4. Возможно воспользоваться любыми сервисами, например для переноса музыки есть сервисы, как [TuneMyMusic](https://www.tunemymusic.com/ru/) или [Soundiiz](https://soundiiz.com/ru/)
+  4. Возможно воспользоваться любыми сервисами, например для переноса музыки есть сервисы, как [TuneMyMusic](https://www.tunemymusic.com/ru/) или [Soundiiz](https://soundiiz.com/ru/).
 </details>
 
 Чтобы изменить скорость прокрутки, замените значения
