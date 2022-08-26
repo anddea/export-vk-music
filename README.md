@@ -2,7 +2,7 @@
 From any playlist, with autoscrolling and ability to save multiple ways.
 
 ## Usage
-Open any playlist that you want to export in new tab (not modal window). Run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/src/vk.js) or [copy code below](#copy-code) and paste it in browser console. The code creates buttons to copy, download, open in new tab and shows information how many tracks in playlist. Additionally there are code snippets to [open list tracks in new tab](#open-in-new-tab) and [download text file](#download-text-file) automatically. <br><br>
+Open any playlist that you want to export in new tab (not modal window). Install one of the Userscript browser extensions such as Violentmonkey, Tampermonkey, Greasemonkey, etc, then install [this userscript](https://github.com/anddea/export-vk-music/raw/main/src/vk.user.js) or run [this script](https://raw.githubusercontent.com/anddea/export-vk-music/main/src/vk.js), or [copy code below](#copy-code) and paste it in browser console. The code creates buttons to copy, download, open in new tab and shows information how many tracks in playlist. Additionally there are code snippets to [open list tracks in new tab](#open-in-new-tab) and [download text file](#download-text-file) automatically. <br><br>
 Encountering any issues? Contact via [Matrix](https://matrix.to/#/@merluani:matrix.org) or [QMS 4PDA](https://4pda.to/forum/index.php?showuser=7049539).
 
 ##### Shortcuts to open console
@@ -33,7 +33,31 @@ var scrollDirection = 200 // pixels to go in given time (currently delay = 50 mi
 *If delay value is small or scrollDirection value is big, the page may not scroll to the end and not save the entire track list but there is a way to run the same script multiple times or change values of delay and scrollDirection.*
 
 ## Инструкция
-При возникновении проблем, ошибок пишите в [Matrix](https://matrix.to/#/@merluani:matrix.org) или в [QMS 4PDA](https://4pda.to/forum/index.php?showuser=7049539).
+При возникновении проблем, ошибок пишите в [Matrix](https://matrix.to/#/@merluani:matrix.org) или в [QMS 4PDA](https://4pda.to/forum/index.php?showuser=7049539). 
+
+```diff
+! Данное ПО автоматически прокручивает страницу и собирает все треки на странице. После чего показывает кнопки скопировать все песни, скачать текстовый файл и открыть список треков в новой вкладке. 
+! Если страница не прокрутилась до конца и/или не показала кнопки для экспорта, то повторите запуск (может даже несколько раз), не перезагружая страницу.
+! Если на странице несколько секций с музыкой, то скрипт может собрать не только те треки, которые нужны.
+! Плейлисты, альбомы нужно открывать в новой вкладке, а не поверх основной страницы, т е. не модальное окно.
+```
+
+### Метод 1:
+1. **Установить одно из расширений пользовательских скриптов в браузер**: Violentmonkey, Tampermonkey, Greasemonkey и др.
+2. **Установить [скрипт](https://github.com/anddea/export-vk-music/raw/main/src/vk.user.js)**.
+3. **Открыть список треков**, которые хотите перенести 
+    - своя музыка, 
+    - музыка друзей, 
+    - альбомы исполнителей, 
+    - музыка из плейлистов, 
+    - плейлисты, которые сгенерированы самим ВК, например Daily Playlist, Weekly Playlist и др.
+4. Нажать дважды клавишу `Alt` непрерывно (в течение 200 мс).
+
+Для изменения клавиши, заменить скрипт в расширении на любую удобную клавишу
+```js
+const key = "alt" // control, meta, shift, a, b, c
+```
+### Метод 2:
 1. **Открыть на компьютере список треков**, которые хотите перенести 
     - своя музыка, 
     - музыка друзей, 
@@ -41,7 +65,7 @@ var scrollDirection = 200 // pixels to go in given time (currently delay = 50 mi
     - музыка из плейлистов, нужно открывать плейлист в новой вкладке, а не поверх основной страницы, т е. не модальное окно, 
     - плейлисты, которые сгенерированы самим ВК, например Daily Playlist, Weekly Playlist и др.
 2. **Открыть консоль браузера, [горячие клавиши](#shortcuts-to-open-console)**.
-3. **Вставить [скрипт](#copy-code) (`Ctrl + V` / `Command ⌘ + V`) и запустить (`Enter`).** Скрипт прокрутит страницу до конца и добавит в конце треков кнопки: скопировать все песни, скачать текстовый файл и открыть список треков в новой вкладке. Дополнительно есть скрипты для автоматического [открытия треков в новой вкладке](#open-in-new-tab) и [скачивания](#download-text-file) без взаимодействия пользователя.
+3. **Вставить [скрипт](#copy-code) (`Ctrl + V` / `Command ⌘ + V`) и запустить (`Enter`).** Дополнительно есть скрипты для автоматического [открытия треков в новой вкладке](#open-in-new-tab) и [скачивания](#download-text-file) без взаимодействия пользователя.
 <details>
   <summary>Дополнительно</summary>
   
