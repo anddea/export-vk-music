@@ -16,7 +16,7 @@ var scrollDirection = 200;
 document.addEventListener('keydown', function (e) {
   if (e.key.toLowerCase() == key) {
     if (e.key == last) {
-      if (confirm("Продолжить?") == true) {
+      if (confirm("Данная страница прокрутиться в самый низ и создаст кнопки для эксопрта треков.\n\nПродолжить?") == true) {
         pageScroll();
       }
       last = "none";
