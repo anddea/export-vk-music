@@ -1,0 +1,182 @@
+// ==UserScript==
+// @name        Export VK Music
+// @match       https://vk.com/*
+// @grant       none
+// @version     2022.08.26 (2)
+// @author      -
+// @description Userscript for exporting VK music to text
+// ==/UserScript==
+
+const key = "alt" // control, meta, shift, a, b, c
+var last;
+
+var delay = 50;
+var scrollDirection = 200;
+
+document.addEventListener('keydown', function (e) {
+  if (e.key.toLowerCase() == key) {
+    if (e.key == last) {
+      if (confirm("Данная страница прокрутиться в самый низ и создаст кнопки для эксопрта треков.\n\nПродолжить?") == true) {
+        pageScroll();
+      }
+      last = "none";
+    } else {
+      last = e.key;
+      setTimeout(function () { last = "none"; }, 200);
+    }
+  }
+});
+
+function fallbackCopyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  textArea.style.display = "none";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'успешно' : 'с ошибкой';
+    console.log('F: Скопировано ' + msg);
+    copyBtn.innerText = "Скопировано";
+  } catch (err) {
+    console.error('F: Ошибка: ', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function () {
+    copyBtn.innerText = "Скопировано";
+    console.log('A: Скопировано');
+  }, function (err) {
+    console.error('A: Ошибка: ', err);
+  });
+}
+
+function scrapeTracks() {
+  var artist = document.getElementsByClassName("audio_row__performers");
+  var song = document.getElementsByClassName("audio_row__title_inner");
+  list = [];
+
+  for (var i = 0; i < artist.length; i++) {
+    list[i] = artist[i].firstElementChild.innerText + ' - ' + song[i].innerText;
+  }
+
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    createButtons(artist);
+  }
+}
+
+function createButtons(artist) {
+  if (document.getElementsByClassName("AudioPlaylistSnippet__body").length > 0) {
+    performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode;
+  } else {
+    performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+  }
+
+  if (document.getElementById("info")) {
+    document.getElementById("info").remove();
+    document.getElementById("copyBtn").remove();
+    document.getElementById("downloadBtn").remove();
+    document.getElementById("openBtn").remove();
+  }
+
+  var info = document.createElement('div');
+  info.id = "info";
+  info.style.width = "70%";
+  info.innerHTML = "Количество треков на странице: " + artist.length + "<br><span style='font-size: 8pt; opacity: 0.7;'>Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны.</span>";
+  info.style.margin = "1rem 0 .2rem";
+  performersParent.append(info);
+
+  // Copy
+  var copyBtn = document.createElement('a');
+  copyBtn.id = "copyBtn";
+  copyBtn.innerText = "Скопировать";
+  copyBtn.style.margin = ".2rem 0";
+  copyBtn.style.marginRight = "1rem";
+  copyBtn.style.display = "inline-block";
+  performersParent.append(copyBtn);
+
+  copyBtn.addEventListener('click', function (event) {
+    copyTextToClipboard(list.join('\n'));
+
+    setTimeout(function () {
+      copyBtn.innerText = "Скопировать";
+    }, 2000);
+  });
+
+  // Download
+  var downloadBtn = document.createElement('a');
+  downloadBtn.id = "downloadBtn";
+  downloadBtn.innerText = "Скачать ";
+  downloadBtn.style.margin = ".2rem 0";
+  downloadBtn.style.marginRight = "1rem";
+  downloadBtn.style.display = "inline-block";
+  downloadBtn.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(list.join('\n')));
+  downloadBtn.setAttribute('download', 'VK Music ' + Date() + '.txt');
+  performersParent.append(downloadBtn);
+
+  // Open in new tab
+  var openBtn = document.createElement('a');
+  openBtn.id = "openBtn";
+  openBtn.innerText = "Открыть";
+  openBtn.style.margin = ".2rem 0";
+  openBtn.style.marginRight = "1rem";
+  openBtn.style.display = "inline-block";
+  performersParent.append(openBtn);
+
+  openBtn.addEventListener('click', function (event) {
+    window.open().document.write(list.join('<br/>'))
+  });
+
+  document.getElementById("copyBtn").scrollIntoView({ block: "center", behavior: "smooth" });
+
+  document.getElementById("info").onmouseover = function () {
+    showTooltip(this, { text: 'Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны', black: 1, noZIndex: true, needLeft: false });
+  };
+
+  document.getElementById("copyBtn").onmouseover = function () {
+    showTooltip(this, { text: 'Скопировать список треков в буфер обмена', black: 1, noZIndex: true, needLeft: false });
+  };
+
+  document.getElementById("downloadBtn").onmouseover = function () {
+    showTooltip(this, { text: 'Скачать список треков в текстовом файле', black: 1, noZIndex: true, needLeft: false });
+  };
+
+  document.getElementById("openBtn").onmouseover = function () {
+    showTooltip(this, { text: 'Открыть список треков в новой вкладке', black: 1, noZIndex: true, needLeft: false });
+  };
+}
+
+function pageScroll() {
+  setTimeout(function () {
+    if (document.getElementsByClassName("ui_tab")) {
+      for (var i = 0; i < document.getElementsByClassName("ui_tab").length; i++) {
+        document.getElementsByClassName("ui_tab")[i].setAttribute("target", "_blank");
+      }
+    }
+
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      setTimeout(function () {
+        let length = document.getElementsByClassName("audio_row__performers").length;
+        if (length > 0) {
+          scrapeTracks();
+        } else { alert("На этой странице не найдено песен") }
+      }, 500);
+
+      return false;
+    }
+
+    window.scrollBy(0, scrollDirection);
+    scrolldelay = setTimeout(pageScroll(), 1);
+  }, delay)
+}

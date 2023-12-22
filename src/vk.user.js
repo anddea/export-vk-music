@@ -1,182 +1,129 @@
 // ==UserScript==
-// @name        Export VK Music
-// @match       https://vk.com/*
-// @grant       none
-// @version     2022.08.26 (2)
-// @author      -
-// @description Userscript for exporting VK music to text
+// @name            Export VK Music
+// @version         3.1
+// @description     Userscript for exporting VK music to text
+// @author          Aaron Veil
+// @match           *://vk.com/*
+// @icon            https://vk.com/favicon.ico
+// @homepageURL     https://github.com/anddea/export-vk-music
+// @supportURL      https://github.com/anddea/export-vk-music/issues
+// @updateURL       https://raw.githubusercontent.com/anddea/export-vk-music/main/src/vk.user.js
+// @downloadURL     https://raw.githubusercontent.com/anddea/export-vk-music/main/src/vk.user.js
+// @grant           none
 // ==/UserScript==
 
-const key = "alt" // control, meta, shift, a, b, c
-var last;
+(() => {
+  "use strict";
 
-var delay = 50;
-var scrollDirection = 200;
+  // VARIABLES
+  // Constants
+  const KEY = "Alt";
+  const DELAY = 50;
+  const SCROLL_DIRECTION = 200;
 
-document.addEventListener('keydown', function (e) {
-  if (e.key.toLowerCase() == key) {
-    if (e.key == last) {
-      if (confirm("Данная страница прокрутиться в самый низ и создаст кнопки для эксопрта треков.\n\nПродолжить?") == true) {
-        pageScroll();
-      }
-      last = "none";
-    } else {
-      last = e.key;
-      setTimeout(function () { last = "none"; }, 200);
+  // State variables
+  let last, list = [];
+
+  const tooltips = {
+    copyBtn: "Скопировать список треков в буфер обмена",
+    downloadBtn: "Скачать список треков в текстовом файле",
+    openBtn: "Открыть список треков в новой вкладке",
+  };
+
+  // FUNCTIONS
+  const fallbackCopyTextToClipboard = text => {
+    const textArea = document.body.appendChild(document.createElement("textarea"));
+    textArea.value = text;
+    textArea.style = "display:none";
+    textArea.select();
+
+    try {
+      document.execCommand("copy") && (copyBtn.innerText = "Скопировано");
+    } catch (err) {
+      console.error("F: Ошибка: ", err);
+    } finally {
+      document.body.removeChild(textArea);
     }
-  }
-});
-
-function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  textArea.style.display = "none";
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'успешно' : 'с ошибкой';
-    console.log('F: Скопировано ' + msg);
-    copyBtn.innerText = "Скопировано";
-  } catch (err) {
-    console.error('F: Ошибка: ', err);
-  }
-
-  document.body.removeChild(textArea);
-}
-
-function copyTextToClipboard(text) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(function () {
-    copyBtn.innerText = "Скопировано";
-    console.log('A: Скопировано');
-  }, function (err) {
-    console.error('A: Ошибка: ', err);
-  });
-}
-
-function scrapeTracks() {
-  var artist = document.getElementsByClassName("audio_row__performers");
-  var song = document.getElementsByClassName("audio_row__title_inner");
-  list = [];
-
-  for (var i = 0; i < artist.length; i++) {
-    list[i] = artist[i].firstElementChild.innerText + ' - ' + song[i].innerText;
-  }
-
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-    createButtons(artist);
-  }
-}
-
-function createButtons(artist) {
-  if (document.getElementsByClassName("AudioPlaylistSnippet__body").length > 0) {
-    performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode;
-  } else {
-    performersParent = [...document.querySelectorAll(".audio_row__performers")].at(-1).parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
-  }
-
-  if (document.getElementById("info")) {
-    document.getElementById("info").remove();
-    document.getElementById("copyBtn").remove();
-    document.getElementById("downloadBtn").remove();
-    document.getElementById("openBtn").remove();
-  }
-
-  var info = document.createElement('div');
-  info.id = "info";
-  info.style.width = "70%";
-  info.innerHTML = "Количество треков на странице: " + artist.length + "<br><span style='font-size: 8pt; opacity: 0.7;'>Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны.</span>";
-  info.style.margin = "1rem 0 .2rem";
-  performersParent.append(info);
-
-  // Copy
-  var copyBtn = document.createElement('a');
-  copyBtn.id = "copyBtn";
-  copyBtn.innerText = "Скопировать";
-  copyBtn.style.margin = ".2rem 0";
-  copyBtn.style.marginRight = "1rem";
-  copyBtn.style.display = "inline-block";
-  performersParent.append(copyBtn);
-
-  copyBtn.addEventListener('click', function (event) {
-    copyTextToClipboard(list.join('\n'));
-
-    setTimeout(function () {
-      copyBtn.innerText = "Скопировать";
-    }, 2000);
-  });
-
-  // Download
-  var downloadBtn = document.createElement('a');
-  downloadBtn.id = "downloadBtn";
-  downloadBtn.innerText = "Скачать ";
-  downloadBtn.style.margin = ".2rem 0";
-  downloadBtn.style.marginRight = "1rem";
-  downloadBtn.style.display = "inline-block";
-  downloadBtn.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(list.join('\n')));
-  downloadBtn.setAttribute('download', 'VK Music ' + Date() + '.txt');
-  performersParent.append(downloadBtn);
-
-  // Open in new tab
-  var openBtn = document.createElement('a');
-  openBtn.id = "openBtn";
-  openBtn.innerText = "Открыть";
-  openBtn.style.margin = ".2rem 0";
-  openBtn.style.marginRight = "1rem";
-  openBtn.style.display = "inline-block";
-  performersParent.append(openBtn);
-
-  openBtn.addEventListener('click', function (event) {
-    window.open().document.write(list.join('<br/>'))
-  });
-
-  document.getElementById("copyBtn").scrollIntoView({ block: "center", behavior: "smooth" });
-
-  document.getElementById("info").onmouseover = function () {
-    showTooltip(this, { text: 'Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны', black: 1, noZIndex: true, needLeft: false });
   };
 
-  document.getElementById("copyBtn").onmouseover = function () {
-    showTooltip(this, { text: 'Скопировать список треков в буфер обмена', black: 1, noZIndex: true, needLeft: false });
+  const copyTextToClipboard = text =>
+    navigator.clipboard
+      ? navigator.clipboard
+          .writeText(text)
+          .then(() => (copyBtn.innerText = "Скопировано"))
+          .catch((err) => console.error("A: Ошибка: ", err))
+      : fallbackCopyTextToClipboard(text);
+
+  const createButton = (id, text, onClick) => {
+    const button = document.createElement("a");
+    button.id = id;
+    button.innerText = text;
+    button.style.cssText = "margin:.2rem 0;margin-right:1rem;display:inline-block";
+    button.addEventListener("click", onClick);
+    // performersParent.appendChild(button);
+    return button;
   };
 
-  document.getElementById("downloadBtn").onmouseover = function () {
-    showTooltip(this, { text: 'Скачать список треков в текстовом файле', black: 1, noZIndex: true, needLeft: false });
+  const getLastParent = (element, levels) => levels >= 0 ? Array.from({ length: levels + 1 }).reduce((parent, _) => parent?.parentNode, element) : null;
+
+  const appendButtons = artist => {
+    const performersParent = document.getElementsByClassName("AudioPlaylistSnippet__body").length > 0
+      ? getLastParent([...document.querySelectorAll(".audio_row__performers")].at(-1), 4)
+      : getLastParent([...document.querySelectorAll(".audio_row__performers")].at(-1), 8);
+
+    ["info", "copyBtn", "downloadBtn", "openBtn"].forEach(id => document.getElementById(id)?.remove());
+
+    const info = document.createElement("div");
+    info.id = "info";
+    info.style.cssText = "width:70%;margin:1rem 0 .2rem";
+    info.innerHTML = `Количество треков на странице: ${artist.length}<br><span style='font-size: 8pt; opacity: 0.7;'>Если на странице есть несколько секций, то в список могут попасть не только те треки, которые нужны.</span>`;
+    performersParent.appendChild(info);
+
+    performersParent.appendChild(createButton("copyBtn", "Скопировать", () => {
+      copyTextToClipboard(list.join("\n"));
+      setTimeout(() => copyBtn.innerText = "Скопировать", 2000);
+    }));
+
+    performersParent.appendChild(createButton("downloadBtn", "Скачать", () => {
+      downloadBtn.href = `data:text/plain;charset=utf-8,${encodeURIComponent(list.join("\n"))}`;
+      downloadBtn.download = `VK Music ${new Date()}.txt`;
+    }));
+
+    performersParent.appendChild(createButton("openBtn", "Открыть", () => window.open().document.write(list.join("<br/>"))));
+
+    document.getElementById("info").scrollIntoView({ block: "center", behavior: "smooth" });
+
+    ["copyBtn", "downloadBtn", "openBtn"].forEach(id => document.getElementById(id)?.addEventListener("mouseover", () =>
+      showTooltip(document.getElementById(id), { text: tooltips[id], black: 1, noZIndex: true, needLeft: false })
+    ));
   };
 
-  document.getElementById("openBtn").onmouseover = function () {
-    showTooltip(this, { text: 'Открыть список треков в новой вкладке', black: 1, noZIndex: true, needLeft: false });
-  };
-}
+  const scrapeTracks = () => {
+    const artist = document.getElementsByClassName("audio_row__performers");
+    const song = document.getElementsByClassName("audio_row__title_inner");
+    list = Array.from(artist).map(
+      (el, i) => `${el.firstElementChild.innerText} - ${song[i].innerText}`
+    );
 
-function pageScroll() {
-  setTimeout(function () {
-    if (document.getElementsByClassName("ui_tab")) {
-      for (var i = 0; i < document.getElementsByClassName("ui_tab").length; i++) {
-        document.getElementsByClassName("ui_tab")[i].setAttribute("target", "_blank");
-      }
-    }
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
+      appendButtons(artist);
+  };
+
+  const pageScroll = () => setTimeout(() => {
+    Array.from(document.getElementsByClassName("ui_tab")).forEach(el => el.setAttribute("target", "_blank"));
 
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-      setTimeout(function () {
-        let length = document.getElementsByClassName("audio_row__performers").length;
-        if (length > 0) {
-          scrapeTracks();
-        } else { alert("На этой странице не найдено песен") }
-      }, 500);
-
-      return false;
+      setTimeout(() => document.getElementsByClassName("audio_row__performers").length > 0 ? scrapeTracks() : alert("На этой странице не найдено песен"), 500);
+    } else {
+      window.scrollBy(0, SCROLL_DIRECTION);
+      setTimeout(() => pageScroll(), 1);
     }
+  }, DELAY);
 
-    window.scrollBy(0, scrollDirection);
-    scrolldelay = setTimeout(pageScroll(), 1);
-  }, delay)
-}
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === KEY.toLowerCase()) {
+      last = e.key === last ? confirm('Данная страница прокрутится в самый низ и создаст кнопки для экспорта треков. \n\nЕсли страница не прокрутилась до конца, запустите ещё раз. \n\nПродолжить?') && pageScroll() : e.key;
+      setTimeout(() => (last = 'none'), 200);
+    }
+  });
+})();
